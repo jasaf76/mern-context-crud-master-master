@@ -1,0 +1,41 @@
+{
+  "name": "nfttemplatevideo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "start:server": "NODE_ENV=development nodemon server.js",
+    "start:server_prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.3",
+    "ether": "^0.0.9",
+    "express": "^4.18.2",
+    "formik": "^2.2.9",
+    "framer-motion": "^7.2.1",
+    "ipfs-http-client": "^58.0.0",
+    "mongoose": "^6.7.5",
+    "morgan": "^1.10.0",
+    "ndb": "^1.1.5",
+    "next": "12.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.2",
+    "react-icons": "^4.4.0",
+    "react-router-dom": "^6.4.4",
+    "slugify": "^1.6.5",
+    "validator": "^13.7.0",
+    "web3modal": "^1.9.9",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.11.2"
+  }
+}
