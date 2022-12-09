@@ -44,7 +44,30 @@ const createNFT = catchAsync(async (req, res, next) => {
       nft: newNFT,
     },
   });
+  next();
 });
+
+export const createPost = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    let image = null;
+    if (req.files?.image) {
+      const result = await uploadImage(req.files.image.tempFilePath);
+      await fs.remove(req.files.image.tempFilePath);
+      image = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    }
+    const newPost = new Post({ title, description, image });
+    await newPost.save();
+    return res.json(newPost);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 
 //Get Single nft
 const getSingleNFT = catchAsync(async (req, res, next) => {
@@ -181,4 +204,5 @@ export default {
   deleteNFT,
   getNFTsStats,
   getMonthlyPlan,
+  	
 };

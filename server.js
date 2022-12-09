@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import app from "./app.js";
 //const mongoose = require("mongoose");
 // console.log(app.get("env"))
+import { MongoClient } from "mongodb";
 
 dotenv.config({ path: "./config.env" });
 
@@ -19,6 +20,9 @@ mongoose
     // console.log(con.connection);
     console.log("DB Connection Successfully");
   });
+
+
+
 
 // //console.log(process.env)
 const port = process.env.PORT || 3033;

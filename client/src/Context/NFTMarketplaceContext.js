@@ -4,12 +4,14 @@ import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-import { createNfTRequest } from "../../src/pages/api/DBfunction.js";
-import {NFT} from  '../../../server/models/nftModel.js'
-//const cors = require('cors')
-//require("dotenv").config("./../server.env" );
 
-// const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
+//import { NewNFT } from "../../../server/controllers/nftControllers.js";
+import {
+  getPostsRequest,
+ createNfTRequest,
+  createPostRequest,
+
+} from "../pages/api/DBfunction.js";
 
 const projectId = "2Hj8QCQxalH4hpQpwzCYsei1kav";
 const projectSecretKey = "7b6dff57a70839fa1aba6309a3d195ee";
@@ -150,7 +152,6 @@ export const NFTMarketplaceProvider = ({ children }) => {
       const added = await client.add({ content: file });
       const url = `${subdomain}/ipfs/${added.path}`;
       return url;
-      
     } catch (error) {
       setError("Error Uploading to IPFS");
       setOpenError(true);
@@ -169,10 +170,10 @@ export const NFTMarketplaceProvider = ({ children }) => {
       //const res = await createNfTRequest();
       console.log(data);
       // //  //setDbFetch([...data,res.data]);
-      console.log(createNfTRequest( data));
-      setDbFetch(createNfTRequest(data));
+      // console.log(fetchMyNFTsToDb(data));
+      // setDbFetch(fetchMyNFTsToDb(data));
       await createSale(url, price);
-     
+
       router.push("/searchPage");
     } catch (error) {
       setError("Error while creating NFT NO ESTA BIEN");
@@ -189,7 +190,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
       const contract = await connectingWithSmartContract();
 
       const listingPrice = await contract.getListingPrice();
-      
+
       const transaction = !isReselling
         ? await contract.createToken(url, price, {
             value: listingPrice.toString(),
@@ -199,8 +200,8 @@ export const NFTMarketplaceProvider = ({ children }) => {
           });
 
       await transaction.wait();
-   
-       console.log(createNfTRequest(data));
+
+      
     } catch (error) {
       setError("error while creating sale");
       setOpenError(true);
@@ -239,7 +240,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
                 seller,
                 owner,
                 image,
-                name: "jdfkldjsfkldajsklfj",
+                name,
                 description,
                 tokenURI,
               };
@@ -248,7 +249,6 @@ export const NFTMarketplaceProvider = ({ children }) => {
         );
         console.log(items);
         return items;
-        
       }
     } catch (error) {
       setError("Fehler beim Abrufen von NFTS");
@@ -259,7 +259,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
   useEffect(() => {
     if (currentAccount) {
       fetchNFTs();
-       console.log(createNfTRequest(data));
+      console.log(createNfTRequest(data));
     }
   }, []);
 
@@ -309,7 +309,6 @@ export const NFTMarketplaceProvider = ({ children }) => {
 
   useEffect(() => {
     fetchMyNFTsOrListedNFTs();
-
   }, []);
 
   //---BUY NFTs FUNCTION
@@ -404,6 +403,33 @@ export const NFTMarketplaceProvider = ({ children }) => {
       console.log(error);
     }
   };
+  
+  //FETCH TO DBfunction
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await getPostsRequest();
+      setPosts(res.data);
+    })();
+  }, []);
+    
+  const fetchMyNFTsToDb = async (nfts) => {
+    try {
+      const res = await createNfTRequest(nfts);
+      setPosts([...posts, res.data]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const createPost = async (post) => {
+    try {
+      const res = await createPostRequest(post);
+      setPosts([...posts, res.data]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <NFTMarketplaceContext.Provider
       value={{
@@ -426,6 +452,9 @@ export const NFTMarketplaceProvider = ({ children }) => {
         accountBalance,
         transactionCount,
         transactions,
+        fetchMyNFTsToDb,
+        createPost,
+        posts
       }}>
       {children}
     </NFTMarketplaceContext.Provider>

@@ -3,7 +3,7 @@ import morgan from "morgan";
 import AppError from "./server/utils/appError.js";
 import globalErrorHandler from "./server/controllers/errorController.js";
 import nftsRouter from "./server/routes/nftsRoute.routes.js";
-
+import postRoutes from "./server/routes/posts.routes.js"
 import usersRouter from "./server/routes/usersRoute.js";
 
 const app = express();
@@ -37,6 +37,8 @@ app.use((req, res, next) => {
 
 app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);
+app.use("/api", postRoutes);
+
 ///--ERROR SECTION
 app.all("*", (req, res, next) => {
   // res.status(404).json({
